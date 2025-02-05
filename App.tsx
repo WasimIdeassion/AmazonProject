@@ -1,117 +1,132 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import {View, StyleSheet} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import MoreScreen from './src/screens/MoreScreen';
+import CartScreen from './src/screens/CartScreen';
+import MenuScreen from './src/screens/MenuScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import OcticonsIcon from 'react-native-vector-icons/Octicons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
+import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIconsIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const Tab = createBottomTabNavigator();
+
+// Helper function for rendering tab icons
+const renderTabIcon = (
+  routeName: string,
+  focused: boolean,
+  color: string,
+  size: number = 24, // Default size,
+) => {
+  let IconComponent: React.ComponentType<{
+    name: string;
+    size: number;
+    color: string;
+  }> | null = null;
+  let iconName: string = '';
+
+  switch (routeName) {
+    case 'Home':
+      IconComponent = OcticonsIcon as React.ComponentType<{
+        name: string;
+        size: number;
+        color: string;
+      }>;
+      iconName = 'home';
+      break;
+    case 'Profile':
+      IconComponent = FontAwesomeIcon as React.ComponentType<{
+        name: string;
+        size: number;
+        color: string;
+      }>;
+      iconName = 'user-o';
+      break;
+    case 'More':
+      IconComponent = MaterialCommunityIconsIcon as React.ComponentType<{
+        name: string;
+        size: number;
+        color: string;
+      }>;
+      iconName = 'cards-variant';
+      break;
+    case 'Cart':
+      IconComponent = IoniconsIcon as React.ComponentType<{
+        name: string;
+        size: number;
+        color: string;
+      }>;
+      iconName = 'cart-outline';
+      break;
+    case 'Menu':
+      IconComponent = IoniconsIcon as React.ComponentType<{
+        name: string;
+        size: number;
+        color: string;
+      }>;
+      iconName = 'menu';
+      break;
+    default:
+      IconComponent = null;
+      break;
+  }
+
+  if (!IconComponent) {
+    return null;
+  }
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.iconContainer}>
+      {focused && <View style={styles.activeLine} />}
+      <IconComponent name={iconName} size={size - 5} color={color} />
     </View>
   );
-}
+};
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({route}) => ({
+          tabBarStyle: {
+            height: 55,
+            // paddingBottom: 10,
+            // paddingTop: 5,
+            // borderTopWidth: 1,
+            // borderTopColor: '#ccc',
+          },
+          tabBarLabelStyle: {fontSize: 10},
+          tabBarActiveTintColor: '#008295', // Active tab color
+          tabBarInactiveTintColor: '#0d0d0d', // Inactive tab color
+          tabBarIcon: ({focused, color, size}) =>
+            renderTabIcon(route.name, focused, color, size),
+        })}>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="More" component={MoreScreen} />
+        <Tab.Screen name="Cart" component={CartScreen} />
+        <Tab.Screen name="Menu" component={MenuScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  iconContainer: {
+    alignItems: 'center',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  activeLine: {
+    width: 40, // Adjust the line width as needed
+    height: 4, // Adjust the line height as needed
+    backgroundColor: '#008295', // Change to your desired color
+    marginBottom: 8, // Add spacing between the line and icon
+    position: 'absolute',
+    top: -10, // Adjust the line position as needed
   },
 });
 
