@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
@@ -90,29 +90,38 @@ const renderTabIcon = (
 
 function App(): React.JSX.Element {
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={({route}) => ({
-          tabBarStyle: {
-            height: 55,
-            // paddingBottom: 10,
-            // paddingTop: 5,
-            // borderTopWidth: 1,
-            // borderTopColor: '#ccc',
-          },
-          tabBarLabelStyle: {fontSize: 10},
-          tabBarActiveTintColor: '#008295', // Active tab color
-          tabBarInactiveTintColor: '#0d0d0d', // Inactive tab color
-          tabBarIcon: ({focused, color, size}) =>
-            renderTabIcon(route.name, focused, color, size),
-        })}>
-        <Tab.Screen name="Home" component={HomeScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-        <Tab.Screen name="More" component={MoreScreen} />
-        <Tab.Screen name="Cart" component={CartScreen} />
-        <Tab.Screen name="Menu" component={MenuScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <>
+      {/* Set StatusBar color */}
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="dark-content"
+      />
+      <NavigationContainer>
+        <Tab.Navigator
+          screenOptions={({route}) => ({
+            tabBarStyle: {
+              height: 55,
+              // paddingBottom: 10,
+              // paddingTop: 5,
+              // borderTopWidth: 1,
+              // borderTopColor: '#ccc',
+            },
+            tabBarLabelPosition: 'below-icon',
+            tabBarLabelStyle: {fontSize: 10},
+            tabBarActiveTintColor: '#008295', // Active tab color
+            tabBarInactiveTintColor: '#0d0d0d', // Inactive tab color
+            tabBarIcon: ({focused, color, size}) =>
+              renderTabIcon(route.name, focused, color, size),
+          })}>
+          <Tab.Screen name="Home" component={HomeScreen} />
+          <Tab.Screen name="Profile" component={ProfileScreen} />
+          <Tab.Screen name="More" component={MoreScreen} />
+          <Tab.Screen name="Cart" component={CartScreen} />
+          <Tab.Screen name="Menu" component={MenuScreen} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </>
   );
 }
 
@@ -122,7 +131,9 @@ const styles = StyleSheet.create({
   },
   activeLine: {
     width: 40, // Adjust the line width as needed
-    height: 4, // Adjust the line height as needed
+    height: 5,
+    borderBottomLeftRadius: 4, // Adjust the line height as needed
+    borderBottomRightRadius: 4, // Adjust the line height as needed
     backgroundColor: '#008295', // Change to your desired color
     marginBottom: 8, // Add spacing between the line and icon
     position: 'absolute',
