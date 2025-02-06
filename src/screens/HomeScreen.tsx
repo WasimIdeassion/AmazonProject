@@ -1,83 +1,84 @@
-import {StyleSheet, Text, View, ScrollView, TextInput} from 'react-native';
-import React, {useEffect} from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import LinearGradient from 'react-native-linear-gradient';
+import {Text, View, StyleSheet, ScrollView} from 'react-native';
+import React, {useLayoutEffect} from 'react';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-const HomeScreen = ({navigation}) => {
-  useEffect(() => {
+import DeliveryAddressCard from '../components/DeliveryAddressCard';
+import CategoryCard from '../components/CategoryCard';
+import {categoryData, dealData, devicesDealData} from '../data/CarouselData';
+import CarouselCard from '../components/CarouselCard';
+import DealCard from '../components/DealCard';
+import CustomHeader from '../components/SearchHeader';
+
+type HomeScreenProps = {
+  navigation: StackNavigationProp<any>;
+};
+
+const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
+  // ✅ Use useLayoutEffect for setting navigation options
+  useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: '',
-      header: () => (
-        <LinearGradient
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 0}}
-          colors={['#84dce6', '#93e0da', '#a9ead0']}>
-          <View
-            style={{
-              flexDirection: 'row',
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingVertical: 10,
-              paddingHorizontal: 12,
-              paddingTop: 40,
-              gap: 20,
-            }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                backgroundColor: '#fff',
-                borderWidth: 1,
-                borderColor: '#5a797a',
-                borderRadius: 10,
-                paddingVertical: 4,
-                paddingHorizontal: 10,
-                flexGrow: 1,
-                boxShadow: '0 0 10 rgba(0, 0, 0, 0.6)',
-              }}>
-              <View
-                style={{flexDirection: 'row', alignItems: 'center', gap: 10}}>
-                <Ionicons name="search" size={24} color="black" />
-                <TextInput
-                  style={{color: 'black'}}
-                  placeholder="Search or ask a question"
-                  onChangeText={text => console.log(text)}
-                  placeholderTextColor={'#4d4d4d'}
-                />
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 10,
-                }}>
-                <MaterialCommunityIcons
-                  name="camera-plus-outline"
-                  size={26}
-                  color="black"
-                />
-                <Ionicons name="mic-outline" size={26} color="black" />
-              </View>
-            </View>
-            <MaterialCommunityIcons
-              name="qrcode-scan"
-              size={24}
-              color="black"
-            />
-          </View>
-        </LinearGradient>
-      ),
+      header: CustomHeader, // ✅ Pass as a direct reference
     });
   }, [navigation]);
 
   return (
-    <View>
-      <Text>HomeScreen</Text>
-    </View>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      <DeliveryAddressCard />
+      <ScrollView
+        style={styles.categoryContainer}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}>
+        {categoryData.map(dat => (
+          <CategoryCard key={dat.text} img={dat.img} text={dat.text} />
+        ))}
+      </ScrollView>
+
+      <CarouselCard />
+
+      <View>
+        <Text style={styles.dealText}>Electronics devices for home office</Text>
+        <View style={styles.dealItemCont}>
+          {devicesDealData.map(data => (
+            <DealCard key={data.text} img={data.img} text={data.text} />
+          ))}
+        </View>
+      </View>
+
+      <View>
+        <Text style={styles.dealText}>
+          {' '}
+          Up to 60% off | Tools & home improvement
+        </Text>
+        <View style={styles.dealItemCont}>
+          {dealData.map(data => (
+            <DealCard key={data.text} img={data.img} text={data.text} />
+          ))}
+        </View>
+      </View>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  categoryContainer: {
+    flex: 1,
+    paddingLeft: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+  },
+  dealText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    marginLeft: 10,
+    marginTop: 20,
+  },
+  dealItemCont: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+  },
+});
 
 export default HomeScreen;
